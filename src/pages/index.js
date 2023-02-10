@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
 import { useState } from 'react';
+import axios from 'axios';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -24,7 +25,9 @@ const Form = (props) => {
   const [personality, setPersonality] = useState("Athletic Person");
   const [genre, setGenre] = useState("Horror");
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const { data } = await axios.get(`http://localhost:8000?personality=${personality}&genre=${genre}`)
+    props.setBooks(data);
     console.log('submitted', personality, genre);
   };
 
@@ -65,14 +68,14 @@ const Books = (props) => {
 };
 
 export default function Home() {
-  const books = ['caillou', 'clifford', 'riverdale'];
+  const [books, setBooks] = useState(['caillou', 'clifford', 'riverdale']);
   const [personality, setPersonality] = useState("Athletic Person");
   const [genre, setGenre] = useState("Horror");
 
   return (
     <>
       <NavBar />
-      <Form personality={personality} setPersonality={setPersonality} genre={genre} setGenre={setGenre} books={books} />
+      <Form personality={personality} setPersonality={setPersonality} genre={genre} setGenre={setGenre} books={books} setBooks={setBooks} />
       <Books books={books}/>
     </>
   )
